@@ -1,0 +1,302 @@
+# AeroConnect — Stubby4node API Mock
+# Arrancar con: npm run mock
+# Endpoints disponibles en http://localhost:8882/api/
+
+# ─────────────────────────────────────────────
+# AUTH
+# ─────────────────────────────────────────────
+- request:
+    url: /api/auth/login
+    method: POST
+    headers:
+      content-type: application/json
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+      Access-Control-Allow-Origin: "*"
+    body: >
+      {
+        "token": "bW9jay10b2tlbi14eHg=",
+        "email": "test@aeroconnect.com",
+        "expiresIn": 86400
+      }
+
+# CORS preflight para /api/auth/login
+- request:
+    url: /api/auth/login
+    method: OPTIONS
+  response:
+    status: 200
+    headers:
+      Access-Control-Allow-Origin: "*"
+      Access-Control-Allow-Methods: "POST, OPTIONS"
+      Access-Control-Allow-Headers: "Content-Type, Authorization"
+
+# ─────────────────────────────────────────────
+# AIRPORTS
+# ─────────────────────────────────────────────
+- request:
+    url: /api/airports
+    method: GET
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+      Access-Control-Allow-Origin: "*"
+    body: >
+      [
+        { "code": "BCN", "city": "Barcelona" },
+        { "code": "MAD", "city": "Madrid" },
+        { "code": "VLC", "city": "Valencia" },
+        { "code": "SVQ", "city": "Sevilla" },
+        { "code": "PMI", "city": "Palma de Mallorca" },
+        { "code": "LPA", "city": "Las Palmas" }
+      ]
+
+# ─────────────────────────────────────────────
+# FLIGHTS — Search
+# ─────────────────────────────────────────────
+- request:
+    url: /api/flights
+    method: GET
+    query:
+      origin: BCN
+      destination: MAD
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+      Access-Control-Allow-Origin: "*"
+    body: >
+      [
+        {
+          "id": "fl-001",
+          "flightNumber": "AC1234",
+          "origin": { "code": "BCN", "city": "Barcelona", "country": "España" },
+          "destination": { "code": "MAD", "city": "Madrid", "country": "España" },
+          "departureDate": "2025-07-15T07:00:00",
+          "arrivalDate": "2025-07-15T08:10:00",
+          "durationMinutes": 70,
+          "basePrice": 59,
+          "availableSeats": 42,
+          "airline": "AeroConnect",
+          "status": "scheduled"
+        },
+        {
+          "id": "fl-002",
+          "flightNumber": "AC1236",
+          "origin": { "code": "BCN", "city": "Barcelona", "country": "España" },
+          "destination": { "code": "MAD", "city": "Madrid", "country": "España" },
+          "departureDate": "2025-07-15T12:30:00",
+          "arrivalDate": "2025-07-15T13:45:00",
+          "durationMinutes": 75,
+          "basePrice": 45,
+          "availableSeats": 8,
+          "airline": "AeroConnect",
+          "status": "scheduled"
+        },
+        {
+          "id": "fl-003",
+          "flightNumber": "AC1238",
+          "origin": { "code": "BCN", "city": "Barcelona", "country": "España" },
+          "destination": { "code": "MAD", "city": "Madrid", "country": "España" },
+          "departureDate": "2025-07-15T19:00:00",
+          "arrivalDate": "2025-07-15T20:20:00",
+          "durationMinutes": 80,
+          "basePrice": 89,
+          "availableSeats": 0,
+          "airline": "AeroConnect",
+          "status": "delayed"
+        }
+      ]
+
+- request:
+    url: /api/flights
+    method: GET
+    query:
+      origin: MAD
+      destination: PMI
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+      Access-Control-Allow-Origin: "*"
+    body: >
+      [
+        {
+          "id": "fl-010",
+          "flightNumber": "AC5012",
+          "origin": { "code": "MAD", "city": "Madrid", "country": "España" },
+          "destination": { "code": "PMI", "city": "Palma de Mallorca", "country": "España" },
+          "departureDate": "2025-07-20T09:15:00",
+          "arrivalDate": "2025-07-20T10:30:00",
+          "durationMinutes": 75,
+          "basePrice": 72,
+          "availableSeats": 35,
+          "airline": "AeroConnect",
+          "status": "scheduled"
+        },
+        {
+          "id": "fl-011",
+          "flightNumber": "AC5014",
+          "origin": { "code": "MAD", "city": "Madrid", "country": "España" },
+          "destination": { "code": "PMI", "city": "Palma de Mallorca", "country": "España" },
+          "departureDate": "2025-07-20T16:45:00",
+          "arrivalDate": "2025-07-20T18:05:00",
+          "durationMinutes": 80,
+          "basePrice": 55,
+          "availableSeats": 20,
+          "airline": "AeroConnect",
+          "status": "scheduled"
+        }
+      ]
+
+# Fallback genérico para cualquier búsqueda de vuelos
+- request:
+    url: /api/flights
+    method: GET
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+      Access-Control-Allow-Origin: "*"
+    body: >
+      [
+        {
+          "id": "fl-099",
+          "flightNumber": "AC9999",
+          "origin": { "code": "BCN", "city": "Barcelona", "country": "España" },
+          "destination": { "code": "VLC", "city": "Valencia", "country": "España" },
+          "departureDate": "2025-08-01T10:00:00",
+          "arrivalDate": "2025-08-01T11:05:00",
+          "durationMinutes": 65,
+          "basePrice": 38,
+          "availableSeats": 60,
+          "airline": "AeroConnect",
+          "status": "scheduled"
+        }
+      ]
+
+# ─────────────────────────────────────────────
+# FLIGHTS — Detail (by id)
+# ─────────────────────────────────────────────
+- request:
+    url: /api/flights/fl-001
+    method: GET
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+      Access-Control-Allow-Origin: "*"
+    body: >
+      {
+        "id": "fl-001",
+        "flightNumber": "AC1234",
+        "origin": { "code": "BCN", "city": "Barcelona", "country": "España" },
+        "destination": { "code": "MAD", "city": "Madrid", "country": "España" },
+        "departureDate": "2025-07-15T07:00:00",
+        "arrivalDate": "2025-07-15T08:10:00",
+        "durationMinutes": 70,
+        "basePrice": 59,
+        "availableSeats": 42,
+        "airline": "AeroConnect",
+        "status": "scheduled"
+      }
+
+- request:
+    url: /api/flights/fl-002
+    method: GET
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+      Access-Control-Allow-Origin: "*"
+    body: >
+      {
+        "id": "fl-002",
+        "flightNumber": "AC1236",
+        "origin": { "code": "BCN", "city": "Barcelona", "country": "España" },
+        "destination": { "code": "MAD", "city": "Madrid", "country": "España" },
+        "departureDate": "2025-07-15T12:30:00",
+        "arrivalDate": "2025-07-15T13:45:00",
+        "durationMinutes": 75,
+        "basePrice": 45,
+        "availableSeats": 8,
+        "airline": "AeroConnect",
+        "status": "scheduled"
+      }
+
+- request:
+    url: /api/flights/fl-010
+    method: GET
+  response:
+    status: 200
+    headers:
+      content-type: application/json
+      Access-Control-Allow-Origin: "*"
+    body: >
+      {
+        "id": "fl-010",
+        "flightNumber": "AC5012",
+        "origin": { "code": "MAD", "city": "Madrid", "country": "España" },
+        "destination": { "code": "PMI", "city": "Palma de Mallorca", "country": "España" },
+        "departureDate": "2025-07-20T09:15:00",
+        "arrivalDate": "2025-07-20T10:30:00",
+        "durationMinutes": 75,
+        "basePrice": 72,
+        "availableSeats": 35,
+        "airline": "AeroConnect",
+        "status": "scheduled"
+      }
+
+# ─────────────────────────────────────────────
+# BOOKINGS — Create (protegido con Bearer token)
+# ─────────────────────────────────────────────
+- request:
+    url: /api/bookings
+    method: POST
+    headers:
+      Authorization: Bearer .+
+    body: .*
+  response:
+    status: 201
+    headers:
+      content-type: application/json
+      Access-Control-Allow-Origin: "*"
+    body: >
+      {
+        "id": "bk-abc123",
+        "pnr": "ACXYZ9",
+        "flightId": "fl-001",
+        "flightNumber": "AC1234",
+        "origin": "BCN",
+        "destination": "MAD",
+        "departureDate": "2025-07-15T07:00:00",
+        "passengers": [],
+        "totalPrice": 118,
+        "status": "confirmed",
+        "createdAt": "2025-04-22T10:00:00"
+      }
+
+- request:
+    url: /api/bookings
+    method: POST
+  response:
+    status: 401
+    headers:
+      content-type: application/json
+      Access-Control-Allow-Origin: "*"
+    body: >
+      { "error": "Unauthorized", "message": "Se requiere autenticación." }
+
+# CORS preflight para /api/bookings
+- request:
+    url: /api/bookings
+    method: OPTIONS
+  response:
+    status: 200
+    headers:
+      Access-Control-Allow-Origin: "*"
+      Access-Control-Allow-Methods: "POST, OPTIONS"
+      Access-Control-Allow-Headers: "Content-Type, Authorization"

@@ -1,0 +1,50 @@
+<div class="home">
+  <section class="hero">
+    <div class="hero__content">
+      <h1 class="hero__title">Encuentra tu vuelo</h1>
+      <p class="hero__subtitle">Más de 200 destinos al mejor precio</p>
+    </div>
+  </section>
+
+  <section class="search-box">
+    <h2 class="search-box__title">¿A dónde quieres ir?</h2>
+
+    <form class="search-form" (ngSubmit)="search()">
+      <mat-form-field appearance="outline" class="search-form__field">
+        <mat-label>Origen</mat-label>
+        <mat-select name="origin" [(ngModel)]="origin" required>
+          @for (airport of airports; track airport.code) {
+            <mat-option [value]="airport.code">{{ airport.city }} ({{ airport.code }})</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-form__field">
+        <mat-label>Destino</mat-label>
+        <mat-select name="destination" [(ngModel)]="destination" required>
+          @for (airport of airports; track airport.code) {
+            <mat-option [value]="airport.code">{{ airport.city }} ({{ airport.code }})</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-form__field">
+        <mat-label>Fecha de salida</mat-label>
+        <input matInput name="date" [(ngModel)]="date" type="date" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-form__field search-form__field--small">
+        <mat-label>Pasajeros</mat-label>
+        <mat-select name="passengers" [(ngModel)]="passengers">
+          @for (n of [1,2,3,4,5,6]; track n) {
+            <mat-option [value]="n">{{ n }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-flat-button type="submit" class="search-form__submit">
+        Buscar vuelos
+      </button>
+    </form>
+  </section>
+</div>

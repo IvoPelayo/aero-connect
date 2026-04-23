@@ -1,0 +1,28 @@
+<header class="header">
+  <div class="header__inner">
+    <a routerLink="/" class="header__logo">
+      <span class="header__logo-icon">✈</span>
+      <span class="header__logo-text">AeroConnect</span>
+    </a>
+    <nav class="header__nav">
+      <a routerLink="/flights" mat-button>Buscar vuelos</a>
+      @if (isAuthenticated()) {
+        <a routerLink="/booking" mat-button>Mi reserva</a>
+        <button mat-stroked-button (click)="logout()">Salir</button>
+      } @else {
+        <a routerLink="/login" mat-flat-button class="header__cta">Acceder</a>
+      }
+    </nav>
+  </div>
+</header>
+
+<main class="main-content">
+  <router-outlet />
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <span class="footer__brand">AeroConnect © 2025</span>
+    <span class="footer__tagline">Vuela sin complicaciones</span>
+  </div>
+</footer>

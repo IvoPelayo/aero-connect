@@ -1,0 +1,105 @@
+.confirmation-page {
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: var(--color-bg);
+}
+
+.confirmation-card {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  overflow: hidden;
+
+  &__success {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #e6b800 100%);
+    padding: 40px 32px 32px;
+    text-align: center;
+    color: var(--color-on-primary);
+  }
+
+  &__icon {
+    font-size: 64px;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 12px;
+  }
+
+  &__title {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0 0 8px;
+  }
+
+  &__subtitle {
+    font-size: 15px;
+    margin: 0;
+    opacity: 0.9;
+  }
+
+  &__detail {
+    padding: 24px 32px;
+  }
+
+  &__no-data {
+    padding: 40px;
+    text-align: center;
+    color: var(--color-text-secondary);
+
+    mat-icon { font-size: 40px; width: 40px; height: 40px; }
+  }
+
+  &__actions {
+    padding: 0 32px 32px;
+    display: flex;
+    justify-content: center;
+
+    a {
+      background: var(--color-primary) !important;
+      color: var(--color-on-primary) !important;
+      font-weight: 600 !important;
+    }
+  }
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-child { border-bottom: none; }
+
+  &__label {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+  }
+
+  &__value {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--color-text);
+
+    &--pnr {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-primary-dark);
+      letter-spacing: 2px;
+    }
+  }
+
+  &--total {
+    margin-top: 8px;
+    padding-top: 20px;
+    border-top: 2px solid var(--color-border);
+    border-bottom: none;
+
+    .detail-row__label { font-size: 16px; font-weight: 600; color: var(--color-text); }
+    .detail-row__value { font-size: 22px; font-weight: 700; }
+  }
+}

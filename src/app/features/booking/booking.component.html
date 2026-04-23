@@ -1,0 +1,131 @@
+<div class="booking-page">
+  <div class="booking-page__inner">
+
+    <!-- RESUMEN DEL VUELO -->
+    <aside class="flight-summary">
+      <h2 class="flight-summary__title">Tu vuelo</h2>
+      @if (flight) {
+        <div class="flight-summary__card">
+          <div class="flight-summary__route">
+            <span class="flight-summary__code">{{ flight.origin.code }}</span>
+            <span class="flight-summary__arrow">→</span>
+            <span class="flight-summary__code">{{ flight.destination.code }}</span>
+          </div>
+          <p class="flight-summary__cities">
+            {{ flight.origin.city }} · {{ flight.destination.city }}
+          </p>
+          <p class="flight-summary__date">
+            {{ flight.departureDate | date:'fullDate':'':'es' }}
+            · {{ flight.departureDate | date:'HH:mm' }} – {{ flight.arrivalDate | date:'HH:mm' }}
+          </p>
+          <p class="flight-summary__number">Vuelo {{ flight.flightNumber }}</p>
+          <div class="flight-summary__price-row">
+            <span>{{ passengers.length }} pasajero{{ passengers.length > 1 ? 's' : '' }}</span>
+            <strong>{{ totalPrice | currency:'EUR':'symbol':'1.2-2' }}</strong>
+          </div>
+        </div>
+      } @else if (isLoadingFlight) {
+        <mat-spinner diameter="32" />
+      } @else if (error) {
+        <p class="flight-summary__error">{{ error }}</p>
+      }
+    </aside>
+
+    <!-- FORMULARIO DE PASAJEROS -->
+    <section class="passenger-form-section">
+      <h1 class="passenger-form-section__title">Datos de los pasajeros</h1>
+
+      <form (ngSubmit)="submit()">
+
+        <!-- Email de contacto -->
+        <div class="form-group">
+          <label class="form-group__label" for="contactEmail">Email de contacto *</label>
+          <input
+            id="contactEmail"
+            class="form-group__input"
+            type="email"
+            name="contactEmail"
+            [(ngModel)]="contactEmail"
+            placeholder="tu@email.com"
+            required
+          />
+        </div>
+
+        <!-- Pasajeros -->
+        @for (passenger of passengers; track $index) {
+          <div class="passenger-card">
+            <h3 class="passenger-card__title">Pasajero {{ $index + 1 }}</h3>
+
+            <div class="passenger-card__grid">
+              <div class="form-group">
+                <label class="form-group__label">Nombre *</label>
+                <input
+                  class="form-group__input"
+                  type="text"
+                  [name]="'firstName_' + $index"
+                  [(ngModel)]="passenger.firstName"
+                  placeholder="Nombre"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-group__label">Apellidos *</label>
+                <input
+                  class="form-group__input"
+                  type="text"
+                  [name]="'lastName_' + $index"
+                  [(ngModel)]="passenger.lastName"
+                  placeholder="Apellidos"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-group__label">Tipo de documento *</label>
+                <select
+                  class="form-group__select"
+                  [name]="'docType_' + $index"
+                  [(ngModel)]="passenger.documentType"
+                >
+                  <option value="dni">DNI</option>
+                  <option value="passport">Pasaporte</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-group__label">Número de documento *</label>
+                <input
+                  class="form-group__input"
+                  type="text"
+                  [name]="'docNumber_' + $index"
+                  [(ngModel)]="passenger.documentNumber"
+                  placeholder="{{ passenger.documentType === 'dni' ? '12345678A' : 'AAB123456' }}"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        }
+
+        @if (error) {
+          <p class="submit-error">{{ error }}</p>
+        }
+
+        <button
+          class="submit-btn"
+          type="submit"
+          [disabled]="isSubmitting || !flight"
+        >
+          @if (isSubmitting) {
+            <mat-spinner diameter="20" />
+          } @else {
+            Confirmar reserva · {{ totalPrice | currency:'EUR':'symbol':'1.2-2' }}
+          }
+        </button>
+
+      </form>
+    </section>
+
+  </div>
+</div>

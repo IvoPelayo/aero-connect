@@ -1,0 +1,53 @@
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-card__logo">
+      <span class="login-card__logo-icon">✈</span>
+      <span class="login-card__logo-text">AeroConnect</span>
+    </div>
+
+    <h1 class="login-card__title">Accede a tu cuenta</h1>
+    <p class="login-card__subtitle">
+      Introduce tu email y el PNR de una reserva existente para continuar.
+    </p>
+
+    <form class="login-form" (ngSubmit)="login()">
+      <div class="form-group">
+        <label class="form-group__label">Email</label>
+        <input
+          class="form-group__input"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          placeholder="tu@email.com"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-group__label">Código de reserva (PNR)</label>
+        <input
+          class="form-group__input"
+          type="text"
+          name="pnr"
+          [(ngModel)]="pnr"
+          placeholder="Ej. ABC123"
+          autocomplete="off"
+          required
+        />
+      </div>
+
+      @if (error) {
+        <p class="login-form__error">{{ error }}</p>
+      }
+
+      <button class="login-form__submit" type="submit">
+        Acceder
+      </button>
+    </form>
+
+    <p class="login-card__hint">
+      <strong>Demo:</strong> email <code>test&#64;aeroconnect.com</code> · PNR <code>TEST01</code>
+    </p>
+  </div>
+</div>

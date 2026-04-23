@@ -1,0 +1,50 @@
+<div class="confirmation-page">
+  <div class="confirmation-card">
+
+    @if (confirmation) {
+      <div class="confirmation-card__success">
+        <mat-icon class="confirmation-card__icon">check_circle</mat-icon>
+        <h1 class="confirmation-card__title">¡Reserva confirmada!</h1>
+        <p class="confirmation-card__subtitle">
+          Recibirás los detalles en <strong>{{ confirmation.passengers[0]!.email }}</strong>
+        </p>
+      </div>
+
+      <div class="confirmation-card__detail">
+        <div class="detail-row">
+          <span class="detail-row__label">Código de reserva</span>
+          <span class="detail-row__value detail-row__value--pnr">{{ confirmation.pnr }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row__label">Vuelo</span>
+          <span class="detail-row__value">{{ confirmation.flightNumber }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row__label">Ruta</span>
+          <span class="detail-row__value">{{ confirmation.origin }} → {{ confirmation.destination }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row__label">Fecha</span>
+          <span class="detail-row__value">{{ confirmation.departureDate | date:'fullDate':'':'es' }}</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-row__label">Pasajeros</span>
+          <span class="detail-row__value">{{ confirmation.passengers.length }}</span>
+        </div>
+        <div class="detail-row detail-row--total">
+          <span class="detail-row__label">Total pagado</span>
+          <span class="detail-row__value">{{ confirmation.totalPrice | currency:'EUR' }}</span>
+        </div>
+      </div>
+    } @else {
+      <div class="confirmation-card__no-data">
+        <p>No hay datos de confirmación.</p>
+      </div>
+    }
+
+    <div class="confirmation-card__actions">
+      <a routerLink="/" mat-flat-button>Buscar otro vuelo</a>
+    </div>
+
+  </div>
+</div>
