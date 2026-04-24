@@ -10,6 +10,7 @@ import { Flight } from '../../core/models/flight.model';
 import { FlightService } from '../../core/services/flight.service';
 import { BookingService } from '../../core/services/booking.service';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+import { map, Observable } from 'rxjs';
 
 interface PassengerForm {
   firstName: string;
@@ -37,10 +38,13 @@ interface PassengerForm {
 export class BookingComponent implements OnInit {
   private _route = inject(ActivatedRoute);
   private _router = inject(Router);
-  private _flightService = inject(FlightService);
   private _bookingService = inject(BookingService);
 
-  flight: Flight | null = this._route.snapshot.data['flight'] ?? null;
+  flight$: Observable<Flight> = this._route.data.pipe(
+    map(data => data['flight'] as Flight)
+  );
+
+  flight: Flight | undefined;
   contactEmail = '';
   isLoadingFlight = false;
   isSubmitting = false;
@@ -56,19 +60,7 @@ export class BookingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.flight) return;
-    const id = this._route.snapshot.paramMap.get('id') ?? '';
-    this.isLoadingFlight = true;
-    this._flightService.getById(id).subscribe({
-      next: (flight) => {
-        this.flight = flight;
-        this.isLoadingFlight = false;
-      },
-      error: () => {
-        this.error = 'No se ha podido cargar la información del vuelo.';
-        this.isLoadingFlight = false;
-      },
-    });
+      this.flight$.subscribe((res) => this.flight = res);
   }
 
   submit(): void {

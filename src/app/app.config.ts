@@ -10,6 +10,7 @@ import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { AirportService } from './core/services/airports.service';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDateFormats, provideNativeDateAdapter } from '@angular/material/core';
 import { delayInterceptor } from './core/interceptors/delay.interceptor';
+import { AuthService } from './core/services/auth.service';
 
 const ES_DATE_FORMATS: MatDateFormats = {
   parse: { dateInput: null },
@@ -35,7 +36,10 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAnimationsAsync(),
     provideLoadingOnNavigation(),
-    provideAppInitializer(() => inject(AirportService).loadAirports()),
+    provideAppInitializer(() => {
+     // inject(AuthService).logout();
+      return inject(AirportService).loadAirports();
+    }),
     provideNativeDateAdapter(),
     { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
     { provide: MAT_DATE_FORMATS, useValue: ES_DATE_FORMATS },

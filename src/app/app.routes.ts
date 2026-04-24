@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+import { flightResolver } from './core/resolvers/flight.resolver';
 
 export const routes: Routes = [
   {
@@ -20,6 +22,10 @@ export const routes: Routes = [
   },
   {
     path: 'booking/:id',
+    canActivate: [ authGuard ],
+    resolve: {
+      flight: flightResolver
+    },
     loadComponent: () =>
       import('./features/booking/booking.component').then(m => m.BookingComponent),
   },

@@ -24,9 +24,7 @@
             <strong>{{ totalPrice | currency:'EUR':'symbol':'1.2-2' }}</strong>
           </div>
         </div>
-      } @else if (isLoadingFlight) {
-        <mat-spinner diameter="32" />
-      } @else if (error) {
+      }  @else if (error) {
         <p class="flight-summary__error">{{ error }}</p>
       }
     </aside>
