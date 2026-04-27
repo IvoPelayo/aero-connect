@@ -17,15 +17,15 @@ export class ResultsFiltersComponent {
   private _flightSearch = inject(FlightSearchService);
 
   form: FormGroup = new FormGroup({
-    maxPrice: new FormControl(null, [ Validators.min(0) ]),
+    maxPrice: new FormControl<number | null>(null, [ Validators.min(0) ]),
     sortBy: new FormControl(null)
   });
 
-  private sortByChanges = toSignal(this.form.get('sortBy')!.valueChanges.pipe(
+  private _sortByChanges = toSignal(this.form.get('sortBy')!.valueChanges.pipe(
     debounceTime(300)
   ));
 
-  private maxPriceChanges = toSignal(this.form.get('maxPrice')!.valueChanges.pipe(
+  private _maxPriceChanges = toSignal(this.form.get('maxPrice')!.valueChanges.pipe(
     debounceTime(300)
   ));
 
@@ -38,11 +38,11 @@ export class ResultsFiltersComponent {
     });
 
     effect(() => {
-      this._flightSearch.setSort(this.sortByChanges());
+      this._flightSearch.setSort(this._sortByChanges());
     });
 
     effect(() => {
-      this._flightSearch.setMaxPrice(this.maxPriceChanges());
+      this._flightSearch.setMaxPrice(this._maxPriceChanges());
     });
 
   }

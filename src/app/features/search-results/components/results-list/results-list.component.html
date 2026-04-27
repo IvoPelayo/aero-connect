@@ -3,7 +3,7 @@
           {{ filteredFlights().length }} vuelo{{ filteredFlights().length !== 1 ? 's' : '' }} encontrado{{ filteredFlights().length !== 1 ? 's' : '' }}
         </p>
 
-        @if (filteredFlights.length === 0) {
+        @if (filteredFlights().length === 0) {
           <div class="flight-list__empty">
             <p>No hay vuelos disponibles con estos filtros.</p>
           </div>
@@ -11,6 +11,6 @@
 
         <!-- TARJETA DE VUELO (extraer a FlightCardComponent en shared/) -->
         @for (flight of filteredFlights(); track flight.id) {
-          <app-flight-card></app-flight-card>
+          <app-flight-card [flight]="flight" (onFlightSelected)="bookFlight($event)"></app-flight-card>
         }
 </section>
