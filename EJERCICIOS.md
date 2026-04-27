@@ -40,6 +40,12 @@ Crea los tipos adecuados en `features/search-results/flight.dto.ts` y úsalos do
 
 ---
 
+## Ejercicio 6 - Refactor & Signals
+Refactorizar el componente de PassengerBookComponent en componentes atomicos (opcional).
+Reemplazar el comportamiento del servicio facade y componentes con el uso de signals. computed, rxjs.
+
+---
+
 ## Bonus
 
 Hay aspectos de la aplicación que funcionan de forma incompleta y cuya mejora suma puntos adicionales. Explora el código.
