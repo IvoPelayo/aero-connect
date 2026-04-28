@@ -1,11 +1,11 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, effect, inject } from '@angular/core';
 import {
   FormBuilder,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { merge, Observable, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, mergeMap } from 'rxjs/operators';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,6 +19,7 @@ import { UpperCasePipe } from '@angular/common';
 
 import { PassengerBookFacade } from './services/passenger-book.facade';
 import { PassengerProfile } from '../../core/models/passenger.model';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-passenger-book',
@@ -39,7 +40,7 @@ import { PassengerProfile } from '../../core/models/passenger.model';
   templateUrl: './passenger-book.component.html',
   styleUrl: './passenger-book.component.scss',
 })
-export class PassengerBookComponent implements OnInit, OnDestroy {
+export class PassengerBookComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   readonly facade = inject(PassengerBookFacade);
 
@@ -60,52 +61,57 @@ export class PassengerBookComponent implements OnInit, OnDestroy {
     frequentFlyer:  [false],
   });
 
-  // ── SUBSCRIPTIONS ─────────────────────────────────────────────────────────────
-  // Hay que guardarlas para cancelarlas en ngOnDestroy.
-  // Si olvidamos alguna → memory leak.
-
-  private searchSub!: Subscription;
-
   // ── PROPIEDADES DERIVADAS (getters) ───────────────────────────────────────────
   // Estas propiedades se recalculan en cada ciclo de change detection,
   // aunque el estado no haya cambiado.
 
-  get canSave(): boolean {
+  search = toSignal(this.searchForm.controls.term.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+  ));
+
+  formEvents$: Observable<unknown> = merge(
+    this.passengerForm.valueChanges,
+    this.passengerForm.statusChanges
+  );
+
+  formValid = toSignal(this.formEvents$.pipe(
+    map(() => this.passengerForm.valid)
+  ));
+
+  formDirty = toSignal(this.formEvents$.pipe(
+    map(() => this.passengerForm.dirty)
+  ));
+
+  constructor() {
+    effect(() => {
+      this.facade.applyFilter(this.search() ?? '');
+    });
+  }
+
+  canSave = computed(() => {
     return (
-      this.passengerForm.valid &&
-      this.passengerForm.dirty &&
-      !this.facade.isSaving &&
-      (this.facade.selectedPassenger !== null || this.facade.isCreating)
+      this.formValid() &&
+      this.formDirty() &&
+      !this.facade.isSaving() &&
+      (this.facade.selectedPassenger() !== null || this.facade.isCreating())
     );
-  }
+  });
 
-  get selectedFullName(): string {
-    const p = this.facade.selectedPassenger;
+  selectedFullName = computed(() => {
+    const p = this.facade.selectedPassenger();
     return p ? `${p.firstName} ${p.lastName}` : '';
-  }
+  });
 
-  get hasUnsavedChanges(): boolean {
-    return this.passengerForm.dirty &&
-      (this.facade.selectedPassenger !== null || this.facade.isCreating);
-  }
+  hasUnsavedChanges = computed(() => {
+    return this.formDirty() &&
+      (this.facade.selectedPassenger() !== null || this.facade.isCreating());
+  });
 
   // ── CICLO DE VIDA ─────────────────────────────────────────────────────────────
 
   ngOnInit(): void {
     this.facade.loadAll();
-
-    // Suscripción al buscador: debounce de 300ms para no filtrar en cada tecla.
-    // Necesita guardarse y cancelarse en ngOnDestroy.
-    this.searchSub = this.searchForm.controls.term.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-    ).subscribe((term) => {
-      this.facade.applyFilter(term ?? '');
-    });
-  }
-
-  ngOnDestroy(): void {
-    this.searchSub?.unsubscribe();
   }
 
   // ── MÉTODOS ───────────────────────────────────────────────────────────────────
@@ -140,7 +146,7 @@ export class PassengerBookComponent implements OnInit, OnDestroy {
   }
 
   save(): void {
-    if (!this.canSave) return;
+    if (!this.canSave()) return;
 
     this.facade.save(this.passengerForm.value as Partial<PassengerProfile>);
 

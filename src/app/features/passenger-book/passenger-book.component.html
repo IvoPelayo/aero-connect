@@ -38,7 +38,7 @@
       </div>
 
       <!-- Estado de carga -->
-      @if (facade.isLoading) {
+      @if (facade.isLoading()) {
         <div class="passenger-panel__loading">
           <mat-spinner diameter="36" />
           <span>Cargando pasajeros...</span>
@@ -46,19 +46,19 @@
       }
 
       <!-- Error de carga -->
-      @if (facade.error && !facade.selectedPassenger && !facade.isCreating) {
+      @if (facade.error() && !facade.selectedPassenger && !facade.isCreating) {
         <div class="passenger-panel__error">
           <mat-icon>error_outline</mat-icon>
-          <p>{{ facade.error }}</p>
+          <p>{{ facade.error() }}</p>
         </div>
       }
 
       <!-- Lista de pasajeros -->
-      @if (!facade.isLoading) {
+      @if (!facade.isLoading()) {
         <ul class="passenger-list">
 
           <!-- Item especial: "Nuevo pasajero" mientras se está creando -->
-          @if (facade.isCreating) {
+          @if (facade.isCreating()) {
             <li class="passenger-list__item passenger-list__item--active passenger-list__item--new">
               <div class="passenger-list__avatar passenger-list__avatar--new">
                 <mat-icon>person_add</mat-icon>
@@ -70,11 +70,11 @@
             </li>
           }
 
-          @for (passenger of facade.filteredPassengers; track passenger.id) {
+          @for (passenger of facade.filteredPassengers(); track passenger.id) {
             <li
               class="passenger-list__item"
-              [class.passenger-list__item--active]="facade.selectedPassenger?.id === passenger.id"
-              [class.passenger-list__item--dirty]="facade.selectedPassenger?.id === passenger.id && hasUnsavedChanges"
+              [class.passenger-list__item--active]="facade.selectedPassenger()?.id === passenger.id"
+              [class.passenger-list__item--dirty]="facade.selectedPassenger()?.id === passenger.id && hasUnsavedChanges"
               (click)="selectPassenger(passenger)"
               role="button"
             >
@@ -93,7 +93,7 @@
                 @if (passenger.frequentFlyer) {
                   <mat-icon class="passenger-list__star" title="Viajero frecuente">star</mat-icon>
                 }
-                @if (facade.selectedPassenger?.id === passenger.id && hasUnsavedChanges) {
+                @if (facade.selectedPassenger()?.id === passenger.id && hasUnsavedChanges()) {
                   <span class="passenger-list__unsaved" title="Cambios sin guardar">●</span>
                 }
               </div>
@@ -126,26 +126,26 @@
       }
 
       <!-- Formulario (edición o alta) -->
-      @if (facade.selectedPassenger || facade.isCreating) {
+      @if (facade.selectedPassenger() || facade.isCreating()) {
         <div class="detail-panel__content">
 
           <div class="detail-panel__header">
             <div>
-              @if (facade.isCreating) {
+              @if (facade.isCreating()) {
                 <h2 class="detail-panel__name">Nuevo pasajero</h2>
                 <p class="detail-panel__flights">
                   <mat-icon>info_outline</mat-icon>
                   Rellena el formulario y guarda para añadirlo
                 </p>
               } @else {
-                <h2 class="detail-panel__name">{{ selectedFullName }}</h2>
+                <h2 class="detail-panel__name">{{ selectedFullName() }}</h2>
                 <p class="detail-panel__flights">
                   <mat-icon>flight</mat-icon>
-                  {{ facade.selectedPassenger!.totalFlights }} vuelos realizados
+                  {{ facade.selectedPassenger()!.totalFlights }} vuelos realizados
                 </p>
               }
             </div>
-            @if (!facade.isCreating && facade.selectedPassenger?.frequentFlyer) {
+            @if (!facade.isCreating && facade.selectedPassenger()?.frequentFlyer) {
               <span class="detail-panel__badge detail-panel__badge--gold">
                 <mat-icon>star</mat-icon> Viajero frecuente
               </span>
@@ -155,18 +155,18 @@
           <mat-divider />
 
           <!-- Banner de éxito -->
-          @if (facade.saveSuccess) {
+          @if (facade.saveSuccess()) {
             <div class="detail-panel__success">
               <mat-icon>check_circle</mat-icon>
-              {{ facade.isCreating ? 'Pasajero creado correctamente' : 'Perfil guardado correctamente' }}
+              {{ facade.isCreating() ? 'Pasajero creado correctamente' : 'Perfil guardado correctamente' }}
             </div>
           }
 
           <!-- Banner de error -->
-          @if (facade.error) {
+          @if (facade.error()) {
             <div class="detail-panel__error-banner">
               <mat-icon>error_outline</mat-icon>
-              {{ facade.error }}
+              {{ facade.error() }}
             </div>
           }
 
@@ -237,20 +237,20 @@
             </div>
 
             <div class="passenger-form__actions">
-              @if (hasUnsavedChanges) {
+              @if (hasUnsavedChanges()) {
                 <span class="passenger-form__dirty-hint">Tienes cambios sin guardar</span>
               }
               <button
                 mat-flat-button
                 type="submit"
                 class="passenger-form__save"
-                [disabled]="!canSave">
-                @if (facade.isSaving) {
+                [disabled]="!canSave()">
+                @if (facade.isSaving()) {
                   <mat-spinner diameter="20" />
                 } @else {
-                  <mat-icon>{{ facade.isCreating ? 'person_add' : 'save' }}</mat-icon>
+                  <mat-icon>{{ facade.isCreating() ? 'person_add' : 'save' }}</mat-icon>
                 }
-                {{ facade.isCreating ? 'Crear pasajero' : 'Guardar cambios' }}
+                {{ facade.isCreating() ? 'Crear pasajero' : 'Guardar cambios' }}
               </button>
             </div>
 
