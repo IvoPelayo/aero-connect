@@ -30,5 +30,12 @@ export const routes: Routes = [
         m => m.ConfirmationComponent
       ),
   },
+  {
+        path: 'passengers',
+        loadComponent: () =>
+          import('./features/passenger-book/passenger-book.component').then(
+            m => m.PassengerBookComponent
+          ),
+  },
   { path: '**', redirectTo: '' },
 ];
